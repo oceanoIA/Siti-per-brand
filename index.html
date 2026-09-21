@@ -402,12 +402,12 @@
     /* 3D rotating wheel */
     .wheel-wrap {
       position: relative;
-      height: 320vh;
+      height: auto;
       margin: 0 -56px 40px;
     }
     .wheel-sticky {
-      position: sticky; top: 90px;
-      height: calc(100svh - 110px);
+      position: relative; top: 0;
+      height: min(78vh, 620px);
       perspective: 1400px;
       overflow: hidden;
       display: grid;
@@ -724,11 +724,17 @@
       header { grid-template-columns: auto 1fr auto; }
       .nav-left { display: none; }
       .logo { font-size: 34px; justify-self: center; }
-      .wheel-wrap { margin: 0 -20px 24px; height: 240vh; }
+      .wheel-wrap { margin: 0 -20px 24px; height: auto; }
       .wheel { width: 220px; height: 280px; }
     }
 
     @media (max-width: 700px) {
+      .wave, .world-fog, .scan { display: none !important; }
+      .glass, header, .perk, .card, .btn {
+        backdrop-filter: blur(10px) saturate(130%) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(130%) !important;
+      }
+      .wheel-sticky { height: min(62vh, 460px); perspective: 900px; }
       :root { --nav-h: 62px; }
       .topbar, .ticker { font-size: 10px; letter-spacing: .12em; padding: 8px 12px; }
       .ticker { gap: 12px; }
@@ -747,7 +753,7 @@
       .sheet .photo { min-height: 220px; }
       .drawer { width: 100%; }
       footer { flex-direction: column; gap: 10px; text-align: center; }
-      .wheel-wrap { margin: 0 -16px 16px; height: 180vh; }
+      .wheel-wrap { margin: 0 -16px 16px; height: auto; }
       .wheel { width: 170px; height: 230px; }
       .intro img { width: min(260px, 70vw); height: min(260px, 70vw); }
     }
@@ -1098,6 +1104,7 @@
     function setCutSrc(el, url) {
       if (!el || !url) return;
       el.src = url;
+      if (window.matchMedia("(max-width: 700px)").matches) return;
       cutout(url).then(src => { if (el) el.src = src; });
     }
 
@@ -1201,10 +1208,13 @@
       card.onclick = () => openModal(p);
       wheel.appendChild(card);
     });
-    document.querySelectorAll(".wheel-card img, .card img, .dot img").forEach(im => {
-      const u = im.getAttribute("src");
-      if (u && !u.startsWith("data:")) cutout(u).then(s => im.src = s);
-    });
+    const isPhone = window.matchMedia("(max-width: 700px)").matches;
+    if (!isPhone) {
+      document.querySelectorAll(".dot img").forEach(im => {
+        const u = im.getAttribute("src");
+        if (u && !u.startsWith("data:")) cutout(u).then(s => im.src = s);
+      });
+    }
 
     let wheelIndex = 0;
     let wheelAngle = 0;
@@ -1221,7 +1231,6 @@
         c.style.opacity = diff === 0 ? 1 : diff === 1 ? .55 : diff === 2 ? .22 : 0;
         c.style.pointerEvents = diff < 2 ? "auto" : "none";
       });
-      setTheme(catalog[wheelIndex].theme);
     }
     paintWheel(0, false);
 
@@ -1261,24 +1270,6 @@
     wheel.addEventListener("click", (e) => {
       if (skipClick) { e.stopPropagation(); e.preventDefault(); }
     }, true);
-
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      if (dragging || ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const wrap = document.getElementById("wheelWrap");
-        const rect = wrap.getBoundingClientRect();
-        const start = window.scrollY + rect.top - 90;
-        const range = wrap.offsetHeight - window.innerHeight + 90;
-        const p = Math.min(1, Math.max(0, (window.scrollY - start) / range));
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          const idx = Math.round(p * (n - 1));
-          if (idx !== wheelIndex) paintWheel(idx, true);
-        }
-        ticking = false;
-      });
-    }, { passive: true });
 
     const garment = document.getElementById("garment");
     garment.addEventListener("mousemove", (e) => {
@@ -1409,12 +1400,7 @@
     if (closeModal) closeModal.onclick = closeAll;
     overlay.onclick = closeAll;
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
-    window.addEventListener("scroll", () => {
-      const y = window.scrollY * 0.06;
-      document.querySelectorAll(".wave").forEach((w, i) => {
-        w.style.translate = (i - 1) * 10 + "px " + (y * (i + 1)) + "px";
-      });
-    }, { passive: true });
+    /* waves stay CSS-only — no scroll listener */
     let payMethod = "paypal";
     document.querySelectorAll(".pay-opt").forEach(btn => {
       btn.onclick = () => {
