@@ -1001,8 +1001,8 @@
       <button class="sheet-close" id="closePay" aria-label="Chiudi">✕</button>
       <div class="body" style="padding:36px">
         <div class="kicker">Checkout</div>
-        <h2 style="font-family:Syne;font-size:28px;margin:8px 0 6px">Come vuoi pagare</h2>
-        <p class="lede" style="margin:0 0 8px">Totale da saldare: <strong id="payTotal">€0,00</strong></p>
+        <h2 style="font-family:Syne;font-size:28px;margin:8px 0 6px">Vai al pagamento</h2>
+        <p class="lede" style="margin:0 0 8px">Totale: <strong id="payTotal">€0,00</strong>. Si apre la cassa ufficiale Amitium in una nuova finestra — PayPal, carta o Klarna.</p>
         <div class="pay-list" id="payList">
           <button class="pay-opt on" data-pay="paypal">
             <span class="pay-ico pp">PayPal</span>
@@ -1021,16 +1021,8 @@
             <span>Apple Pay / Google Pay<small>Wallet del telefono</small></span>
           </button>
         </div>
-        <div class="pay-fields" id="cardFields">
-          <input placeholder="Numero carta" maxlength="19" autocomplete="off" />
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <input placeholder="MM/AA" maxlength="5" autocomplete="off" />
-            <input placeholder="CVC" maxlength="4" autocomplete="off" />
-          </div>
-          <input placeholder="Intestatario" autocomplete="off" />
-        </div>
-        <button class="btn primary" style="width:100%;justify-content:center" id="payNow">Paga ora</button>
-        <p style="color:var(--muted);font-size:11px;margin-top:12px;letter-spacing:.08em;text-transform:uppercase">Demo — nessun addebito reale</p>
+        <button class="btn primary" style="width:100%;justify-content:center" id="payNow">Apri pagamento sicuro</button>
+        <p style="color:var(--muted);font-size:11px;margin-top:12px">Checkout Shopify Amitium · pagamento reale</p>
       </div>
     </div>
   </div>
@@ -1048,6 +1040,8 @@
           CDN + "model_white_back.jpg?v=1789231512&width=1200",
           CDN + "model_white_back_2.jpg?v=1789231517&width=1200"
         ],
+        handle: "rain-jacket",
+        variants: { XS:57780814184793, S:57780814217561, M:57780814250329, L:57780814283097, XL:57780814315865 },
         desc: "Shell tecnico navy, zip a contrasto, logo diamante sul petto. Pensata per la pioggia urbana e le 4 del mattino."
       },
       {
@@ -1060,6 +1054,8 @@
           CDN + "ChatGPT_Image_Sep_12_2026_06_49_36_PM.jpg?v=1789231796&width=1200",
           CDN + "ChatGPT_Image_Sep_12_2026_07_02_58_PM.jpg?v=1789232598&width=1200"
         ],
+        handle: "war-hoodie",
+        variants: { XS:56121700155737, S:56121700188505, M:56121700221273, L:56121700254041, XL:56121700286809 },
         desc: "Felpa heather destroyed, harness militare e stampa AT ITA 1987. Archivio da trincea, fit cropped."
       },
       {
@@ -1072,6 +1068,8 @@
           CDN + "Screenshot_2026-06-20_at_19.40.03.jpg?v=1789231404&width=1200",
           CDN + "Screenshot_2026-06-20_at_19.40.25.jpg?v=1789231406&width=1200"
         ],
+        handle: "za-tee",
+        variants: { XS:58430927307097, S:58430927339865, M:58430927372633, L:58430927405401, XL:58430927438169 },
         desc: "Tee oversized avorio, lacerazioni controllate, grafica keep smoking. Verde bosco su cotone spento."
       },
       {
@@ -1084,6 +1082,8 @@
           CDN + "IMG_5749_1.jpg?v=1789231653&width=1200",
           CDN + "IMG_5743_1.jpg?v=1789231654&width=1200"
         ],
+        handle: "dragon-thermal",
+        variants: { XS:57306727612761, S:57306727645529, M:57306727678297, L:57306727711065, XL:57306727743833 },
         desc: "Thermal nera con draghi ricamati in oro e cremisi. Maniche firmate Amitium in corsivo."
       }
     ];
@@ -1091,12 +1091,12 @@
     const catalog = [
       ...featured,
       { id: "camo", pack: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", remote: CDN + "PP.png?v=1758669530&width=800", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
-      { id: "dhood", pack: "diamond-hoodie", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", gallery: [CDN + "1.png?v=1757450322&width=800", CDN + "3.png?v=1757450775&width=800"], sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
+      { id: "dhood", pack: "diamond-hoodie", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", gallery: [CDN + "1.png?v=1757450322&width=800", CDN + "3.png?v=1757450775&width=800"], sold: true, handle: "diamond-hoodie", variants: { XS:56104818180441, S:56104818213209, M:56104818245977, L:56104818278745, XL:56104818311513 }, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
       { id: "dpant", pack: "diamond-pants", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", remote: CDN + "2.png?v=1757450624&width=800", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
       { id: "dbun", pack: "diamond-bundle", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", remote: CDN + "3.png?v=1757450775&width=800", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
       { id: "navy", pack: "navy-set", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", remote: CDN + "setnavy.png?v=1777402841&width=800", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
-      { id: "quote", pack: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
-      { id: "wpant", pack: "war-pants", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", gallery: [CDN + "5.png?v=1757489695&width=800", CDN + "6.png?v=1757489838&width=800", CDN + "Model_3.png?v=1758668655&width=800"], desc: "Joggers grey con lettering laterale destroyed." }
+      { id: "quote", pack: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", handle: "white-quote-tee", variants: { XS:56008209301849, S:54722928574809, M:54722928607577, L:54722928640345, XL:56008209334617 }, desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
+      { id: "wpant", pack: "war-pants", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", gallery: [CDN + "5.png?v=1757489695&width=800", CDN + "6.png?v=1757489838&width=800", CDN + "Model_3.png?v=1758668655&width=800"], handle: "war-sweatpants", variants: { XS:56236268061017, S:56236268093785, M:56236268126553, L:56236268159321, XL:56236268192089 }, desc: "Joggers grey con lettering laterale destroyed." }
     ];
 
 
@@ -1377,7 +1377,7 @@
       document.getElementById("mTheme").textContent = p.theme.toUpperCase() + " TONE";
       const sizes = document.getElementById("sizes");
       sizes.innerHTML = "";
-      ["S","M","L","XL"].forEach(s => {
+      ["XS","S","M","L","XL"].forEach(s => {
         const b = document.createElement("button");
         b.textContent = s;
         if (s === size) b.className = "on";
@@ -1438,10 +1438,18 @@
       btn.onclick = () => {
         payMethod = btn.dataset.pay;
         document.querySelectorAll(".pay-opt").forEach(x => x.classList.toggle("on", x === btn));
-        document.getElementById("cardFields").classList.toggle("show", payMethod === "card");
       };
     });
     document.getElementById("closePay").onclick = closeAll;
+    function shopUrl() {
+      const parts = cart.map(p => {
+        const id = p.variants && (p.variants[p.size] || p.variants.M || Object.values(p.variants)[0]);
+        return id ? (id + ":1") : null;
+      }).filter(Boolean);
+      if (parts.length) return "https://amitium.shop/cart/" + parts.join(",");
+      const first = cart.find(p => p.handle);
+      return first ? "https://amitium.shop/products/" + first.handle : "https://amitium.shop/checkout";
+    }
     document.getElementById("checkout").onclick = () => {
       if (!cart.length) { toast("Carrello vuoto"); return; }
       document.getElementById("payTotal").textContent = document.getElementById("cartTotal").textContent;
@@ -1451,18 +1459,9 @@
       overlay.classList.add("show");
     };
     document.getElementById("payNow").onclick = () => {
-      const names = { paypal: "PayPal", card: "carta", klarna: "Klarna", apple: "Apple / Google Pay" };
-      const btn = document.getElementById("payNow");
-      btn.textContent = "Elaborazione…";
-      btn.disabled = true;
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = "Paga ora";
-        cart = [];
-        renderCart();
-        closeAll();
-        toast("Pagamento " + names[payMethod] + " confermato · demo");
-      }, 900);
+      const url = shopUrl();
+      window.open(url, "_blank", "noopener");
+      toast("Cassa Amitium aperta");
     };
 
     function toast(msg) {
