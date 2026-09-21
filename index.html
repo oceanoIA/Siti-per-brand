@@ -338,57 +338,33 @@
     }
     .glass-well {
       position: relative;
-      width: min(460px, 78%);
+      width: min(520px, 86%);
       aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: hidden;
+      border-radius: 0;
+      overflow: visible;
       display: grid; place-items: center;
-      background:
-        radial-gradient(circle at 28% 18%, rgba(255,255,255,.34), transparent 36%),
-        radial-gradient(circle at 70% 80%, rgba(255,255,255,.08), transparent 40%),
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
-      backdrop-filter: blur(46px) saturate(200%) brightness(1.05);
-      -webkit-backdrop-filter: blur(46px) saturate(200%) brightness(1.05);
-      border: 1px solid rgba(255,255,255,.34);
-      box-shadow:
-        inset 0 1px 1px rgba(255,255,255,.5),
-        inset 0 -8px 20px rgba(255,255,255,.05),
-        0 30px 70px rgba(0,0,0,.35);
+      background: none;
+      border: 0;
+      box-shadow: none;
+      backdrop-filter: none;
     }
-    .glass-well::before {
-      content: "";
-      position: absolute; inset: -2px;
-      border-radius: inherit;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at var(--gx, 30%) var(--gy, 18%), rgba(255,255,255,.45), transparent 34%),
-        linear-gradient(160deg, rgba(255,255,255,.28), transparent 36%);
-      mix-blend-mode: screen;
-      opacity: .85;
-      transition: background .5s var(--ease-out);
-    }
-    .glass-well::after {
-      content: "";
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
-    }
+    .glass-well::before,
+    .glass-well::after { display: none; }
     .garment {
       position: relative; z-index: 2;
-      width: 82%;
+      width: 92%;
       aspect-ratio: 1;
       display: grid; place-items: center;
       transform-style: preserve-3d;
-      perspective: 900px;
-      transition: transform .45s var(--ease);
+      perspective: 1200px;
+      transition: transform .7s var(--ease-out);
     }
     .garment img {
       width: 100%; height: 100%; object-fit: contain;
       background: transparent;
-      filter: drop-shadow(0 24px 36px rgba(0,0,0,.4));
+      filter: drop-shadow(0 40px 50px rgba(0,0,0,.55));
       user-select: none;
-      transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+      transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
     }
     .garment.spin img {
       opacity: 0;
@@ -465,47 +441,53 @@
     .wheel-sticky {
       position: sticky; top: 90px;
       height: calc(100svh - 110px);
-      perspective: 1400px;
+      perspective: 1600px;
       overflow: hidden;
       display: grid;
       place-items: center;
+      background:
+        radial-gradient(60% 50% at 50% 58%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
     }
     .wheel {
       position: relative;
-      width: min(240px, 34vw);
-      height: min(320px, 50vh);
+      width: min(280px, 36vw);
+      height: min(360px, 56vh);
       transform-style: preserve-3d;
-      transition: transform .9s cubic-bezier(.22,1,.36,1);
+      transition: transform 1.05s cubic-bezier(.16,1,.3,1);
     }
     .wheel-card {
       position: absolute; inset: 0;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.32);
-      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.05));
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      overflow: hidden;
+      border-radius: 0;
+      border: 0;
+      background: transparent;
+      backdrop-filter: none;
+      overflow: visible;
       transform-style: preserve-3d;
       backface-visibility: hidden;
       cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 20px 50px rgba(0,0,0,.28);
-      opacity: .35;
-      transition: opacity .8s var(--ease-out), box-shadow .8s, transform .8s var(--ease-out);
+      box-shadow: none;
+      opacity: .28;
+      transition: opacity 1s var(--ease-out);
     }
-    .wheel-card.front {
-      opacity: 1;
-      box-shadow: 0 30px 70px rgba(0,0,0,.45);
-    }
+    .wheel-card.front { opacity: 1; }
     .wheel-card .thumb {
-      height: 78%;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), transparent 50%),
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      height: 82%;
+      background: transparent;
       display: grid; place-items: center;
     }
-    .wheel-card img { width: 78%; height: 86%; object-fit: contain; }
-    .wheel-card .info { padding: 12px 16px; }
-    .wheel-card h3 { font-size: 14px; }
+    .wheel-card img {
+      width: 88%; height: 92%; object-fit: contain;
+      filter: drop-shadow(0 28px 40px rgba(0,0,0,.5));
+    }
+    .wheel-card .info {
+      padding: 8px 10px 0;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+    }
+    .wheel-card.front .info { opacity: 1; transform: none; }
+    .wheel-card h3 { font-size: 15px; letter-spacing: .04em; }
     .wheel-sticky { touch-action: pan-y; cursor: grab; }
     .wheel-sticky.is-drag { cursor: grabbing; }
     .wheel-hint {
