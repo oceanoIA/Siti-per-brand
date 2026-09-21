@@ -624,6 +624,51 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    .intro {
+      position: fixed; inset: 0; z-index: 200;
+      display: grid; place-items: center;
+      background: #f3efe8;
+      transition: opacity .9s var(--ease), visibility .9s;
+    }
+    .intro.go {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    .intro-inner { text-align: center; padding: 24px; }
+    .intro-k {
+      letter-spacing: .42em; font-size: 11px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 18px;
+      opacity: 0; animation: rise .8s var(--ease) .15s forwards;
+    }
+    .intro img {
+      width: min(420px, 72vw); height: min(420px, 72vw);
+      object-fit: contain;
+      filter: drop-shadow(0 30px 40px rgba(0,0,0,.22));
+      opacity: 0; transform: translateY(18px) scale(.96);
+      animation: rise .9s var(--ease) .28s forwards;
+    }
+    .intro h2 {
+      font-family: "Syne", sans-serif; font-size: clamp(28px, 6vw, 52px);
+      letter-spacing: -.04em; margin-top: 18px;
+      opacity: 0; animation: rise .8s var(--ease) .45s forwards;
+    }
+    .intro button {
+      margin-top: 18px; letter-spacing: .28em; text-transform: uppercase; font-size: 11px;
+      opacity: .55; opacity: 0; animation: rise .7s var(--ease) .7s forwards;
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: none; }
+    }
+    .ticker {
+      display: flex; justify-content: center; gap: 28px; flex-wrap: wrap;
+      padding: 8px 16px;
+      font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--ink);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .ticker b { color: var(--accent); font-weight: 700; }
+    .garment, .badge, .dot { cursor: pointer; }
+
     @media (max-width: 980px) {
       .hero, .look { grid-template-columns: 1fr; }
       .hero { padding: 24px 22px; }
@@ -642,6 +687,14 @@
   </style>
 </head>
 <body data-theme="rain">
+  <div class="intro" id="intro">
+    <div class="intro-inner">
+      <div class="intro-k">Amitium · Drop 00</div>
+      <img id="introImg" alt="Rain Jacket" src="https://amitium.shop/cdn/shop/files/Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=800" />
+      <h2>Rain Jacket</h2>
+      <button type="button" id="introSkip">Entra</button>
+    </div>
+  </div>
   <div class="world" id="world">
     <div class="world-layer rain on" data-theme="rain"><div class="world-fog"></div></div>
     <div class="world-layer war" data-theme="war"><div class="world-fog"></div></div>
@@ -655,6 +708,11 @@
   <div class="scan"></div>
 
   <div class="topbar">Spedizione gratuita in Italia · Cambio taglia 14 giorni · Paga in 3 rate con Klarna</div>
+  <div class="ticker" id="ticker">
+    <span>Live drop</span>
+    <span><b id="tickName">Rain Jacket</b> · <b id="tickLeft">12</b> left</span>
+    <span>chiude tra <b id="tickClock">02:14:33</b></span>
+  </div>
 
   <header>
     <nav class="nav-left">
@@ -927,7 +985,7 @@
       const b = document.createElement("button");
       b.className = "dot" + (i === 0 ? " active" : "");
       b.innerHTML = imgTag(p);
-      b.onclick = () => select(p.id);
+      b.onclick = () => { select(p.id); setTimeout(() => openModal(p), 320); };
       picker.appendChild(b);
     });
 
@@ -1101,6 +1159,39 @@
     garment.addEventListener("mouseleave", () => garment.style.transform = "");
 
     document.getElementById("heroBuy").onclick = () => openModal(current);
+    document.getElementById("garment").onclick = () => openModal(current);
+    document.querySelector(".badge").onclick = () => openModal(current);
+    document.getElementById("heroName").style.cursor = "pointer";
+    document.getElementById("heroName").onclick = () => openModal(current);
+
+    const intro = document.getElementById("intro");
+    const leaveIntro = () => intro.classList.add("go");
+    document.getElementById("introSkip").onclick = leaveIntro;
+    setTimeout(leaveIntro, 2600);
+    setCutSrc(document.getElementById("introImg"), pic(featured[0]));
+
+    const end = Date.now() + (2 * 3600 + 14 * 60 + 33) * 1000;
+    const stock = { rain: 12, war: 9, za: 18, dragon: 7 };
+    function tick() {
+      const left = Math.max(0, end - Date.now());
+      const h = String(Math.floor(left / 3600000)).padStart(2,"0");
+      const m = String(Math.floor(left % 3600000 / 60000)).padStart(2,"0");
+      const s = String(Math.floor(left % 60000 / 1000)).padStart(2,"0");
+      document.getElementById("tickClock").textContent = h + ":" + m + ":" + s;
+      document.getElementById("tickName").textContent = current.name;
+      document.getElementById("tickLeft").textContent = stock[current.id] || 8;
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    window.addEventListener("pointermove", (e) => {
+      const g = document.getElementById("garment");
+      if (!g) return;
+      const r = g.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width/2)) / window.innerWidth;
+      const y = (e.clientY - (r.top + r.height/2)) / window.innerHeight;
+      g.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 10}deg)`;
+    }, { passive: true });
 
     function openModal(p) {
       setTheme(p.theme);
