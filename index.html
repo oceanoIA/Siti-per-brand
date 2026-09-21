@@ -408,19 +408,16 @@
     .wheel-card img { width: 78%; height: 86%; object-fit: contain; }
     .wheel-card .info { padding: 12px 16px; }
     .wheel-card h3 { font-size: 14px; }
-    .wheel-nav {
-      position: absolute; bottom: 18px; left: 50%;
+    .wheel-sticky { touch-action: pan-y; cursor: grab; }
+    .wheel-sticky.is-drag { cursor: grabbing; }
+    .wheel-hint {
+      position: absolute; bottom: 22px; left: 50%;
       transform: translateX(-50%);
-      display: flex; align-items: center; gap: 16px;
       z-index: 4;
-      font-size: 12px; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--muted);
+      font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--muted); pointer-events: none;
+      opacity: .7;
     }
-    .wheel-nav button {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid var(--line); background: var(--glass);
-    }
-    .wheel-nav button:hover { background: var(--ink); color: #111; }
 
     .grid {
       display: grid;
@@ -650,7 +647,7 @@
       <div class="orb"></div>
       <div class="ring"></div>
       <div class="garment" id="garment">
-        <img id="heroImg" src="img/rain.webp" alt="Rain Jacket" />
+        <img id="heroImg" src="https://amitium.shop/cdn/shop/files/Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200" alt="Rain Jacket" />
       </div>
       <div class="badge">
         <div class="name" id="badgeName">Rain Jacket</div>
@@ -684,16 +681,12 @@
         <div class="kicker">Inventory</div>
         <h2>Collezione</h2>
       </div>
-      <p>Scorri: i capi girano su una ruota. Lo sfondo segue il pezzo frontale, senza scatti.</p>
+      <p>Trascina con il dito o col mouse. I capi girano, lo sfondo li segue.</p>
     </div>
     <div class="wheel-wrap" id="wheelWrap">
       <div class="wheel-sticky">
         <div class="wheel" id="wheel"></div>
-        <div class="wheel-nav">
-          <button type="button" id="wheelPrev" aria-label="Precedente">←</button>
-          <span id="wheelLabel">01 / 11</span>
-          <button type="button" id="wheelNext" aria-label="Successivo">→</button>
-        </div>
+        <div class="wheel-hint" id="wheelLabel">Trascina · 01 / 11</div>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -776,39 +769,48 @@
   <div class="toast" id="toast">Aggiunto al carrello</div>
 
   <script>
+    const CDN = "https://amitium.shop/cdn/shop/files/";
     const featured = [
       {
         id: "rain", theme: "rain", name: "Rain Jacket", price: 72,
         img: "img/rain.webp",
+        remote: CDN + "Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200",
         desc: "Shell tecnico navy, zip a contrasto, logo diamante sul petto. Pensata per la pioggia urbana e le 4 del mattino."
       },
       {
         id: "war", theme: "war", name: "War Hoodie", price: 70,
         img: "img/hoodie.webp",
+        remote: CDN + "Senza-nome_23.jpg?v=1789231736&width=1200",
         desc: "Felpa heather destroyed, harness militare e stampa AT ITA 1987. Archivio da trincea, fit cropped."
       },
       {
         id: "za", theme: "za", name: "Za Tee", price: 45,
         img: "img/zatee.webp",
+        remote: CDN + "website_pics-01.jpg?v=1789231400&width=1200",
         desc: "Tee oversized avorio, lacerazioni controllate, grafica keep smoking. Verde bosco su cotone spento."
       },
       {
         id: "dragon", theme: "dragon", name: "Dragon Thermal", price: 45,
         img: "img/dragon.webp",
+        remote: CDN + "Websitepic_front_1.jpg?v=1789231650&width=1200",
         desc: "Thermal nera con draghi ricamati in oro e cremisi. Maniche firmate Amitium in corsivo."
       }
     ];
 
     const catalog = [
       ...featured,
-      { id: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
-      { id: "dhood", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
-      { id: "dpant", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
-      { id: "dbun", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
-      { id: "navy", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
-      { id: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
-      { id: "wpant", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", desc: "Joggers grey con lettering laterale destroyed." }
+      { id: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", remote: CDN + "PP.png?v=1758669530&width=800", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
+      { id: "dhood", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
+      { id: "dpant", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", remote: CDN + "2.png?v=1757450624&width=800", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
+      { id: "dbun", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", remote: CDN + "3.png?v=1757450775&width=800", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
+      { id: "navy", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", remote: CDN + "setnavy.png?v=1777402841&width=800", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
+      { id: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
+      { id: "wpant", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", desc: "Joggers grey con lettering laterale destroyed." }
     ];
+
+    const pic = (p) => p.remote || p.img;
+    const imgTag = (p, extra="") =>
+      `<img src="${pic(p)}" alt="${p.name}" ${extra} onerror="this.onerror=null;this.src='${p.img}'">`;
 
     const euro = n => "€" + n.toFixed(2).replace(".", ",");
     let current = featured[0];
@@ -819,7 +821,7 @@
     featured.forEach((p, i) => {
       const b = document.createElement("button");
       b.className = "dot" + (i === 0 ? " active" : "");
-      b.innerHTML = `<img src="${p.img}" alt="${p.name}">`;
+      b.innerHTML = imgTag(p);
       b.onclick = () => select(p.id);
       picker.appendChild(b);
     });
@@ -841,7 +843,7 @@
       const wrap = document.getElementById("garment");
       wrap.classList.add("spin");
       const apply = () => {
-        img.src = p.img;
+        img.src = pic(p);
         img.alt = p.name;
         wrap.classList.remove("spin");
         document.getElementById("heroName").textContent = p.name;
@@ -867,7 +869,7 @@
       el.className = "card";
       el.innerHTML = `
         ${p.sold ? '<div class="sold">Sold out</div>' : ""}
-        <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
+        <div class="thumb">${imgTag(p)}</div>
         <div class="info">
           <h3>${p.name}</h3>
           <div class="row">
@@ -900,7 +902,7 @@
       card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px)`;
       card.innerHTML = `
         ${p.sold ? '<div class="sold">Sold out</div>' : ""}
-        <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
+        <div class="thumb">${imgTag(p)}</div>
         <div class="info"><h3>${p.name}</h3><div class="price">${euro(p.price)}</div></div>`;
       card.onclick = () => openModal(p);
       wheel.appendChild(card);
@@ -912,8 +914,9 @@
     function paintWheel(index, animate) {
       wheelIndex = ((index % n) + n) % n;
       wheelAngle = -wheelIndex * step;
-      wheel.style.transform = `rotateY(${wheelAngle}deg)`;
-      label.textContent = String(wheelIndex + 1).padStart(2,"0") + " / " + String(n).padStart(2,"0");
+      wheel.style.transition = animate === false ? "none" : "transform .9s cubic-bezier(.22,1,.36,1)";
+      wheel.style.transform = `translateZ(${-radius}px) rotateY(${wheelAngle}deg)`;
+      label.textContent = "Trascina · " + String(wheelIndex + 1).padStart(2,"0") + " / " + String(n).padStart(2,"0");
       wheel.querySelectorAll(".wheel-card").forEach((c, i) => {
         const diff = Math.min(Math.abs(i - wheelIndex), n - Math.abs(i - wheelIndex));
         c.classList.toggle("front", i === wheelIndex);
@@ -924,12 +927,46 @@
     }
     paintWheel(0, false);
 
-    document.getElementById("wheelPrev").onclick = () => paintWheel(wheelIndex - 1, true);
-    document.getElementById("wheelNext").onclick = () => paintWheel(wheelIndex + 1, true);
+    const stage = document.querySelector(".wheel-sticky");
+    let dragging = false, startX = 0, startIndex = 0, lastDx = 0, skipClick = false;
+
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      dragging = true;
+      startX = e.clientX;
+      startIndex = wheelIndex;
+      lastDx = 0;
+      skipClick = false;
+      stage.classList.add("is-drag");
+      wheel.style.transition = "none";
+      try { stage.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    stage.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      lastDx = e.clientX - startX;
+      if (Math.abs(lastDx) > 8) skipClick = true;
+      const ang = - (startIndex - lastDx / 170) * step;
+      wheel.style.transform = `translateZ(${-radius}px) rotateY(${ang}deg)`;
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove("is-drag");
+      const moved = Math.round(-lastDx / 130);
+      paintWheel(startIndex + moved, true);
+    }
+    stage.addEventListener("pointerup", endDrag);
+    stage.addEventListener("pointercancel", endDrag);
+
+    wheel.addEventListener("click", (e) => {
+      if (skipClick) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
 
     let ticking = false;
     window.addEventListener("scroll", () => {
-      if (ticking) return;
+      if (dragging || ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
         const wrap = document.getElementById("wheelWrap");
@@ -945,15 +982,6 @@
       });
     }, { passive: true });
 
-    let dragX = null;
-    wheel.parentElement.addEventListener("pointerdown", e => { dragX = e.clientX; });
-    window.addEventListener("pointerup", e => {
-      if (dragX == null) return;
-      const dx = e.clientX - dragX;
-      dragX = null;
-      if (Math.abs(dx) > 40) paintWheel(wheelIndex + (dx < 0 ? 1 : -1), true);
-    });
-
     const garment = document.getElementById("garment");
     garment.addEventListener("mousemove", (e) => {
       const r = garment.getBoundingClientRect();
@@ -967,7 +995,7 @@
 
     function openModal(p) {
       setTheme(p.theme);
-      document.getElementById("mImg").src = p.img;
+      document.getElementById("mImg").src = pic(p);
       document.getElementById("mName").textContent = p.name;
       document.getElementById("mPrice").textContent = euro(p.price);
       document.getElementById("mDesc").textContent = p.desc;
@@ -1004,7 +1032,7 @@
       else {
         box.innerHTML = cart.map((p, i) => `
           <div class="cart-line">
-            <img src="${p.img}" alt="">
+            <img src="${pic(p)}" alt="">
             <div><strong>${p.name}</strong><div style="color:var(--muted);font-size:12px">${p.size} · ${euro(p.price)}</div></div>
             <button data-i="${i}" class="icon-btn">✕</button>
           </div>`).join("");
@@ -1036,4 +1064,3 @@
   </script>
 </body>
 </html>
-
