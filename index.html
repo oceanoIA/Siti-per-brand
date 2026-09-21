@@ -608,8 +608,18 @@
       background: rgba(255,255,255,.7);
       border: 1px solid rgba(0,0,0,.08);
     }
-    .sheet .photo { background: #f3efe8; display: grid; place-items: center; min-height: 420px; }
-    .sheet .photo img { width: 80%; }
+    .sheet .photo { background: #f3efe8; display: grid; place-items: center; min-height: 420px; position: relative; padding: 18px 18px 72px; }
+    .sheet .photo img { width: 80%; max-height: 420px; object-fit: contain; touch-action: pan-y; }
+    .thumbs {
+      position: absolute; left: 0; right: 0; bottom: 12px;
+      display: flex; justify-content: center; gap: 8px; padding: 0 12px;
+    }
+    .thumbs button {
+      width: 48px; height: 48px; border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(0,0,0,.12); background: #fff; padding: 0;
+    }
+    .thumbs button.on { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .thumbs img { width: 100%; height: 100%; object-fit: cover; }
     .sheet .body { padding: 36px; }
     .sizes { display: flex; gap: 8px; margin: 18px 0 24px; flex-wrap: wrap; }
     .sizes button {
@@ -623,6 +633,37 @@
       font-size: 13px; opacity: 0; pointer-events: none; transition: .35s; z-index: 120;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .pay-list { display: flex; flex-direction: column; gap: 10px; margin: 18px 0 22px; }
+    .pay-opt {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.45);
+      text-align: left; width: 100%;
+      transition: border-color .3s, box-shadow .3s, transform .3s;
+    }
+    .pay-opt.on {
+      border-color: color-mix(in srgb, var(--accent) 70%, #000);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+    .pay-ico {
+      width: 46px; height: 32px; border-radius: 8px;
+      display: grid; place-items: center; font-weight: 800; font-size: 11px;
+      letter-spacing: .04em; color: #fff; flex-shrink: 0;
+    }
+    .pay-ico.pp { background: #003087; }
+    .pay-ico.card { background: #1a1a1a; }
+    .pay-ico.klarna { background: #ffb3c7; color: #0b0b0b; }
+    .pay-ico.apple { background: #111; }
+    .pay-opt small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .pay-fields { display: none; gap: 8px; margin-bottom: 16px; }
+    .pay-fields.show { display: grid; }
+    .pay-fields input {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      border: 1px solid var(--line); background: rgba(255,255,255,.7);
+      font: inherit; color: var(--ink);
+    }
 
     .intro {
       position: fixed; inset: 0; z-index: 200;
@@ -903,7 +944,10 @@
   <div class="modal" id="modal">
     <div class="sheet">
       <button class="sheet-close" id="closeModal" aria-label="Chiudi">✕</button>
-      <div class="photo"><img id="mImg" alt="" /></div>
+      <div class="photo" id="mPhoto">
+        <img id="mImg" alt="" />
+        <div class="thumbs" id="mThumbs"></div>
+      </div>
       <div class="body">
         <div class="kicker" id="mTheme">Drop</div>
         <h2 id="mName" style="font-family:Syne;font-size:32px;margin:8px 0"></h2>
@@ -911,6 +955,44 @@
         <p id="mDesc" class="lede" style="margin:0"></p>
         <div class="sizes" id="sizes"></div>
         <button class="btn primary" id="mAdd">Aggiungi al carrello</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="payModal">
+    <div class="sheet" style="grid-template-columns:1fr;max-width:520px">
+      <button class="sheet-close" id="closePay" aria-label="Chiudi">✕</button>
+      <div class="body" style="padding:36px">
+        <div class="kicker">Checkout</div>
+        <h2 style="font-family:Syne;font-size:28px;margin:8px 0 6px">Come vuoi pagare</h2>
+        <p class="lede" style="margin:0 0 8px">Totale da saldare: <strong id="payTotal">€0,00</strong></p>
+        <div class="pay-list" id="payList">
+          <button class="pay-opt on" data-pay="paypal">
+            <span class="pay-ico pp">PayPal</span>
+            <span>PayPal<small>Account o carta collegata</small></span>
+          </button>
+          <button class="pay-opt" data-pay="card">
+            <span class="pay-ico card">CARD</span>
+            <span>Carta di credito<small>Visa · Mastercard · Amex</small></span>
+          </button>
+          <button class="pay-opt" data-pay="klarna">
+            <span class="pay-ico klarna">Klarna</span>
+            <span>Paga in 3 rate<small>Senza interessi</small></span>
+          </button>
+          <button class="pay-opt" data-pay="apple">
+            <span class="pay-ico apple">Pay</span>
+            <span>Apple Pay / Google Pay<small>Wallet del telefono</small></span>
+          </button>
+        </div>
+        <div class="pay-fields" id="cardFields">
+          <input placeholder="Numero carta" maxlength="19" autocomplete="off" />
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <input placeholder="MM/AA" maxlength="5" autocomplete="off" />
+            <input placeholder="CVC" maxlength="4" autocomplete="off" />
+          </div>
+          <input placeholder="Intestatario" autocomplete="off" />
+        </div>
+        <button class="btn primary" style="width:100%;justify-content:center" id="payNow">Paga ora</button>
+        <p style="color:var(--muted);font-size:11px;margin-top:12px;letter-spacing:.08em;text-transform:uppercase">Demo — nessun addebito reale</p>
       </div>
     </div>
   </div>
@@ -923,24 +1005,47 @@
         id: "rain", pack: "rain", theme: "rain", name: "Rain Jacket", price: 72,
         img: "img/rain.webp",
         remote: CDN + "Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200",
+        gallery: [
+          CDN + "Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200",
+          CDN + "model_white_back.jpg?v=1789231512&width=1200",
+          CDN + "model_white_back_2.jpg?v=1789231517&width=1200"
+        ],
         desc: "Shell tecnico navy, zip a contrasto, logo diamante sul petto. Pensata per la pioggia urbana e le 4 del mattino."
       },
       {
         id: "war", pack: "hoodie", theme: "war", name: "War Hoodie", price: 70,
         img: "img/hoodie.webp",
         remote: CDN + "Senza-nome_23.jpg?v=1789231736&width=1200",
+        gallery: [
+          CDN + "Senza-nome_23.jpg?v=1789231736&width=1200",
+          CDN + "white_back_site.jpg?v=1789232077&width=1200",
+          CDN + "ChatGPT_Image_Sep_12_2026_06_49_36_PM.jpg?v=1789231796&width=1200",
+          CDN + "ChatGPT_Image_Sep_12_2026_07_02_58_PM.jpg?v=1789232598&width=1200"
+        ],
         desc: "Felpa heather destroyed, harness militare e stampa AT ITA 1987. Archivio da trincea, fit cropped."
       },
       {
         id: "za", pack: "zatee", theme: "za", name: "Za Tee", price: 45,
         img: "img/zatee.webp",
         remote: CDN + "website_pics-01.jpg?v=1789231400&width=1200",
+        gallery: [
+          CDN + "website_pics-01.jpg?v=1789231400&width=1200",
+          CDN + "website_pics-02.jpg?v=1789231401&width=1200",
+          CDN + "Screenshot_2026-06-20_at_19.40.03.jpg?v=1789231404&width=1200",
+          CDN + "Screenshot_2026-06-20_at_19.40.25.jpg?v=1789231406&width=1200"
+        ],
         desc: "Tee oversized avorio, lacerazioni controllate, grafica keep smoking. Verde bosco su cotone spento."
       },
       {
         id: "dragon", pack: "dragon", theme: "dragon", name: "Dragon Thermal", price: 45,
         img: "img/dragon.webp",
         remote: CDN + "Websitepic_front_1.jpg?v=1789231650&width=1200",
+        gallery: [
+          CDN + "Websitepic_front_1.jpg?v=1789231650&width=1200",
+          CDN + "Websitepic_back.jpg?v=1789231651&width=1200",
+          CDN + "IMG_5749_1.jpg?v=1789231653&width=1200",
+          CDN + "IMG_5743_1.jpg?v=1789231654&width=1200"
+        ],
         desc: "Thermal nera con draghi ricamati in oro e cremisi. Maniche firmate Amitium in corsivo."
       }
     ];
@@ -948,12 +1053,12 @@
     const catalog = [
       ...featured,
       { id: "camo", pack: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", remote: CDN + "PP.png?v=1758669530&width=800", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
-      { id: "dhood", pack: "diamond-hoodie", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
+      { id: "dhood", pack: "diamond-hoodie", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", gallery: [CDN + "1.png?v=1757450322&width=800", CDN + "3.png?v=1757450775&width=800"], sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
       { id: "dpant", pack: "diamond-pants", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", remote: CDN + "2.png?v=1757450624&width=800", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
       { id: "dbun", pack: "diamond-bundle", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", remote: CDN + "3.png?v=1757450775&width=800", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
       { id: "navy", pack: "navy-set", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", remote: CDN + "setnavy.png?v=1777402841&width=800", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
       { id: "quote", pack: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
-      { id: "wpant", pack: "war-pants", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", desc: "Joggers grey con lettering laterale destroyed." }
+      { id: "wpant", pack: "war-pants", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", gallery: [CDN + "5.png?v=1757489695&width=800", CDN + "6.png?v=1757489838&width=800", CDN + "Model_3.png?v=1758668655&width=800"], desc: "Joggers grey con lettering laterale destroyed." }
     ];
 
 
@@ -1218,7 +1323,31 @@
 
     function openModal(p) {
       setTheme(p.theme);
-      setCutSrc(document.getElementById("mImg"), pic(p));
+      const shots = (p.gallery && p.gallery.length) ? p.gallery : [pic(p)];
+      let shot = 0;
+      const showShot = (i) => {
+        shot = (i + shots.length) % shots.length;
+        setCutSrc(document.getElementById("mImg"), shots[shot]);
+        [...document.getElementById("mThumbs").children].forEach((t, n) => t.classList.toggle("on", n === shot));
+      };
+      const thumbs = document.getElementById("mThumbs");
+      thumbs.innerHTML = "";
+      shots.forEach((url, i) => {
+        const b = document.createElement("button");
+        b.className = i === 0 ? "on" : "";
+        b.innerHTML = `<img src="${url}" alt="">`;
+        b.onclick = (e) => { e.stopPropagation(); showShot(i); };
+        thumbs.appendChild(b);
+      });
+      setCutSrc(document.getElementById("mImg"), shots[0]);
+      const photo = document.getElementById("mPhoto");
+      let sx = 0;
+      photo.onpointerdown = (e) => { sx = e.clientX; };
+      photo.onpointerup = (e) => {
+        const dx = e.clientX - sx;
+        if (dx > 40) showShot(shot - 1);
+        if (dx < -40) showShot(shot + 1);
+      };
       document.getElementById("mName").textContent = p.name;
       document.getElementById("mPrice").textContent = euro(p.price);
       document.getElementById("mDesc").textContent = p.desc;
@@ -1272,6 +1401,7 @@
       drawer.classList.remove("open");
       overlay.classList.remove("show");
       document.getElementById("modal").classList.remove("show");
+      document.getElementById("payModal").classList.remove("show");
     }
     document.getElementById("openCart").onclick = openCart;
     document.getElementById("closeCart").onclick = closeAll;
@@ -1285,7 +1415,37 @@
         w.style.translate = (i - 1) * 10 + "px " + (y * (i + 1)) + "px";
       });
     }, { passive: true });
-    document.getElementById("checkout").onclick = () => toast(cart.length ? "Checkout demo — nessun addebito" : "Carrello vuoto");
+    let payMethod = "paypal";
+    document.querySelectorAll(".pay-opt").forEach(btn => {
+      btn.onclick = () => {
+        payMethod = btn.dataset.pay;
+        document.querySelectorAll(".pay-opt").forEach(x => x.classList.toggle("on", x === btn));
+        document.getElementById("cardFields").classList.toggle("show", payMethod === "card");
+      };
+    });
+    document.getElementById("closePay").onclick = closeAll;
+    document.getElementById("checkout").onclick = () => {
+      if (!cart.length) { toast("Carrello vuoto"); return; }
+      document.getElementById("payTotal").textContent = document.getElementById("cartTotal").textContent;
+      drawer.classList.remove("open");
+      document.getElementById("modal").classList.remove("show");
+      document.getElementById("payModal").classList.add("show");
+      overlay.classList.add("show");
+    };
+    document.getElementById("payNow").onclick = () => {
+      const names = { paypal: "PayPal", card: "carta", klarna: "Klarna", apple: "Apple / Google Pay" };
+      const btn = document.getElementById("payNow");
+      btn.textContent = "Elaborazione…";
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "Paga ora";
+        cart = [];
+        renderCart();
+        closeAll();
+        toast("Pagamento " + names[payMethod] + " confermato · demo");
+      }, 900);
+    };
 
     function toast(msg) {
       const t = document.getElementById("toast");
