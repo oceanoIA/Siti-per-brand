@@ -16,8 +16,10 @@
       --accent-2: #d7e7f2;
       --ink: #f4f1ea;
       --muted: rgba(244,241,234,.62);
-      --glass: rgba(255,255,255,.06);
-      --line: rgba(255,255,255,.12);
+      --glass: rgba(255,255,255,.08);
+      --glass-2: rgba(255,255,255,.04);
+      --line: rgba(255,255,255,.16);
+      --glass-shine: inset 0 1px 0 rgba(255,255,255,.28);
       --shadow: 0 30px 80px rgba(0,0,0,.45);
       --ease: cubic-bezier(.22,1,.36,1);
       --nav-h: 78px;
@@ -143,15 +145,24 @@
       z-index: 50;
     }
 
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid var(--line);
+      box-shadow: var(--glass-shine), 0 18px 48px rgba(0,0,0,.28);
+    }
+
     header {
       position: sticky; top: 0; z-index: 40;
       height: var(--nav-h);
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 0 28px;
-      backdrop-filter: blur(22px) saturate(140%);
-      background: color-mix(in srgb, var(--bg0) 55%, transparent);
+      padding: 0 40px;
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      background: linear-gradient(180deg, rgba(8,10,14,.72), rgba(8,10,14,.38));
       border-bottom: 1px solid var(--line);
     }
     .nav-left, .nav-right {
@@ -258,31 +269,51 @@
 
     .stage {
       position: relative;
-      height: min(74vh, 720px);
-      display: grid; place-items: center;
+      min-height: min(72vh, 680px);
+      display: grid;
+      grid-template-rows: 1fr auto;
+      place-items: center;
+      gap: 18px;
+      padding: 10px 72px 10px 10px;
     }
     .orb {
-      position: absolute; width: 72%; aspect-ratio: 1; border-radius: 50%;
+      position: absolute; width: 68%; aspect-ratio: 1; border-radius: 50%;
       background: radial-gradient(circle, color-mix(in srgb, var(--accent) 38%, transparent), transparent 68%);
-      filter: blur(18px);
+      filter: blur(22px);
       animation: pulse 6s ease-in-out infinite;
     }
     @keyframes pulse {
       0%,100% { transform: scale(1); opacity: .7; }
       50% { transform: scale(1.08); opacity: 1; }
     }
+    .glass-well {
+      position: relative;
+      width: min(460px, 78%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      display: grid; place-items: center;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,.16), transparent 42%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow: var(--glass-shine), 0 30px 70px rgba(0,0,0,.35);
+    }
     .garment {
       position: relative; z-index: 2;
-      width: min(78%, 540px);
+      width: 82%;
       aspect-ratio: 1;
       display: grid; place-items: center;
       transform-style: preserve-3d;
+      perspective: 900px;
       transition: transform .45s var(--ease);
     }
-    .garment { perspective: 900px; }
     .garment img {
       width: 100%; height: 100%; object-fit: contain;
-      filter: drop-shadow(0 30px 50px rgba(0,0,0,.45));
+      background: transparent;
+      filter: drop-shadow(0 24px 36px rgba(0,0,0,.4));
       animation: float 5.5s ease-in-out infinite;
       user-select: none;
       transition: opacity .55s var(--ease), transform .7s var(--ease);
@@ -297,38 +328,45 @@
       50% { transform: translateY(-14px); }
     }
     .badge {
-      position: absolute; left: 6%; bottom: 10%;
-      padding: 14px 18px;
-      border: 1px solid var(--line);
-      background: color-mix(in srgb, var(--bg0) 50%, transparent);
-      backdrop-filter: blur(16px);
-      border-radius: 18px;
-      min-width: 170px;
+      position: relative;
+      left: auto; bottom: auto;
+      padding: 12px 20px;
+      border-radius: 999px;
+      min-width: 210px;
+      text-align: center;
+      display: flex; align-items: baseline; justify-content: center; gap: 14px;
     }
-    .badge .name { font-family: "Syne", sans-serif; font-weight: 700; font-size: 15px; }
-    .badge .price { color: var(--accent); margin-top: 4px; font-size: 14px; }
+    .badge .name { font-family: "Syne", sans-serif; font-weight: 700; font-size: 14px; letter-spacing: .04em; }
+    .badge .price { color: var(--accent); margin-top: 0; font-size: 14px; }
     .ring {
-      position: absolute; inset: 8%;
-      border: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent);
+      position: absolute; inset: 10px;
+      border: 1px dashed color-mix(in srgb, var(--accent) 40%, transparent);
       border-radius: 50%;
       animation: spin 40s linear infinite;
+      pointer-events: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .picker {
-      position: absolute; right: -8px; top: 50%;
+      position: absolute; right: 0; top: 50%;
       transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 12px;
+      display: flex; flex-direction: column; gap: 10px;
       z-index: 3;
+      padding: 10px;
+      border-radius: 22px;
     }
     .dot {
-      width: 58px; height: 58px; border-radius: 16px;
+      width: 54px; height: 54px; border-radius: 50%;
       overflow: hidden; border: 1px solid var(--line);
-      background: var(--glass);
-      opacity: .55; transition: opacity .3s, transform .3s, border-color .3s;
+      background: rgba(255,255,255,.08);
+      opacity: .55; transition: opacity .3s, transform .3s, border-color .3s, box-shadow .3s;
     }
-    .dot img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
-    .dot.active, .dot:hover { opacity: 1; transform: scale(1.06); border-color: var(--accent); }
+    .dot img { width: 100%; height: 100%; object-fit: contain; background: transparent; }
+    .dot.active, .dot:hover {
+      opacity: 1; transform: scale(1.08);
+      border-color: color-mix(in srgb, var(--accent) 70%, white);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
 
     /* PERKS */
     .perks {
@@ -337,10 +375,7 @@
     }
     .perk {
       padding: 28px 26px;
-      border: 1px solid var(--line);
       border-radius: 24px;
-      background: linear-gradient(180deg, var(--glass), transparent);
-      backdrop-filter: blur(10px);
     }
     .perk .ico { font-size: 22px; margin-bottom: 14px; color: var(--accent); }
     .perk h3 {
@@ -402,7 +437,9 @@
     }
     .wheel-card .thumb {
       height: 78%;
-      background: radial-gradient(circle at 50% 60%, #efebe3, #ddd6c8);
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), transparent 50%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
       display: grid; place-items: center;
     }
     .wheel-card img { width: 78%; height: 86%; object-fit: contain; }
@@ -425,10 +462,12 @@
       gap: 18px;
     }
     .card {
-      border: 1px solid var(--line);
       border-radius: 24px;
       overflow: hidden;
-      background: color-mix(in srgb, #fff 4%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid var(--line);
       transition: transform .8s var(--ease), border-color .5s, box-shadow .45s, opacity .8s;
       position: relative;
       opacity: 0;
@@ -447,7 +486,8 @@
     .card .thumb {
       aspect-ratio: 1;
       background:
-        radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--accent) 16%, #ece8e0), #e8e4dc 70%);
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), transparent 52%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
       display: grid; place-items: center; overflow: hidden;
     }
     .dot img { background: #ece8e0 !important; }
@@ -645,30 +685,32 @@
 
     <div class="stage">
       <div class="orb"></div>
-      <div class="ring"></div>
-      <div class="garment" id="garment">
-        <img id="heroImg" src="https://amitium.shop/cdn/shop/files/Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200" alt="Rain Jacket" />
+      <div class="glass-well">
+        <div class="ring"></div>
+        <div class="garment" id="garment">
+          <img id="heroImg" alt="Rain Jacket" src="https://amitium.shop/cdn/shop/files/Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200" />
+        </div>
       </div>
-      <div class="badge">
+      <div class="badge glass">
         <div class="name" id="badgeName">Rain Jacket</div>
         <div class="price" id="badgePrice">€72,00</div>
       </div>
-      <div class="picker" id="picker"></div>
+      <div class="picker glass" id="picker"></div>
     </div>
   </section>
 
   <div class="perks">
-    <article class="perk">
+    <article class="perk glass">
       <div class="ico">⌁</div>
       <h3>Spedizione gratuita</h3>
       <p>Offriamo la spedizione gratuita in Italia. Fuori UE tracciata in 3–6 giorni.</p>
     </article>
-    <article class="perk">
+    <article class="perk glass">
       <div class="ico">↻</div>
       <h3>Cambio taglia</h3>
       <p>Accettiamo cambi di taglia entro 14 giorni dalla consegna, senza attrito.</p>
     </article>
-    <article class="perk">
+    <article class="perk glass">
       <div class="ico">◇</div>
       <h3>Paga in 3 rate</h3>
       <p>Paga il tuo ordine in 3 comode rate senza interessi con Klarna al checkout.</p>
@@ -692,7 +734,7 @@
     <div class="grid" id="grid"></div>
   </section>
 
-  <div class="look" id="look">
+  <div class="look glass" id="look">
     <div class="look-copy">
       <div class="kicker">Lookbook</div>
       <h2>Non è un e-commerce.<br>È un clima.</h2>
@@ -772,25 +814,25 @@
     const CDN = "https://amitium.shop/cdn/shop/files/";
     const featured = [
       {
-        id: "rain", theme: "rain", name: "Rain Jacket", price: 72,
+        id: "rain", pack: "rain", theme: "rain", name: "Rain Jacket", price: 72,
         img: "img/rain.webp",
         remote: CDN + "Websitepic_front_ea72c5c9-07ba-4964-83fb-0946e46516f9.jpg?v=1789231511&width=1200",
         desc: "Shell tecnico navy, zip a contrasto, logo diamante sul petto. Pensata per la pioggia urbana e le 4 del mattino."
       },
       {
-        id: "war", theme: "war", name: "War Hoodie", price: 70,
+        id: "war", pack: "hoodie", theme: "war", name: "War Hoodie", price: 70,
         img: "img/hoodie.webp",
         remote: CDN + "Senza-nome_23.jpg?v=1789231736&width=1200",
         desc: "Felpa heather destroyed, harness militare e stampa AT ITA 1987. Archivio da trincea, fit cropped."
       },
       {
-        id: "za", theme: "za", name: "Za Tee", price: 45,
+        id: "za", pack: "zatee", theme: "za", name: "Za Tee", price: 45,
         img: "img/zatee.webp",
         remote: CDN + "website_pics-01.jpg?v=1789231400&width=1200",
         desc: "Tee oversized avorio, lacerazioni controllate, grafica keep smoking. Verde bosco su cotone spento."
       },
       {
-        id: "dragon", theme: "dragon", name: "Dragon Thermal", price: 45,
+        id: "dragon", pack: "dragon", theme: "dragon", name: "Dragon Thermal", price: 45,
         img: "img/dragon.webp",
         remote: CDN + "Websitepic_front_1.jpg?v=1789231650&width=1200",
         desc: "Thermal nera con draghi ricamati in oro e cremisi. Maniche firmate Amitium in corsivo."
@@ -799,14 +841,54 @@
 
     const catalog = [
       ...featured,
-      { id: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", remote: CDN + "PP.png?v=1758669530&width=800", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
-      { id: "dhood", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
-      { id: "dpant", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", remote: CDN + "2.png?v=1757450624&width=800", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
-      { id: "dbun", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", remote: CDN + "3.png?v=1757450775&width=800", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
-      { id: "navy", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", remote: CDN + "setnavy.png?v=1777402841&width=800", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
-      { id: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
-      { id: "wpant", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", desc: "Joggers grey con lettering laterale destroyed." }
+      { id: "camo", pack: "camo", theme: "war", name: "Convertible Camo Cargo", price: 91, img: "img/camo.webp", remote: CDN + "PP.png?v=1758669530&width=800", sold: true, desc: "Cargo convertibile in short. Mimetico saturo, tasche stacked." },
+      { id: "dhood", pack: "diamond-hoodie", theme: "dragon", name: "Diamond Hoodie", price: 82, img: "img/diamond-hoodie.webp", remote: CDN + "1.png?v=1757450322&width=800", sold: true, desc: "Hoodie nera con wordmark AMITIUM in rilievo diamond." },
+      { id: "dpant", pack: "diamond-pants", theme: "dragon", name: "Diamond Sweatpants", price: 71, img: "img/diamond-pants.webp", remote: CDN + "2.png?v=1757450624&width=800", sold: true, desc: "Pantaloni coordinati, gamba dritta, scritta verticale." },
+      { id: "dbun", pack: "diamond-bundle", theme: "dragon", name: "Diamond Sweatsuit", price: 129, img: "img/diamond-bundle.webp", remote: CDN + "3.png?v=1757450775&width=800", sold: true, desc: "Completo hoodie + pants. Il drop più richiesto." },
+      { id: "navy", pack: "navy-set", theme: "rain", name: "Navy College Set", price: 117, img: "img/navy-set.webp", remote: CDN + "setnavy.png?v=1777402841&width=800", sold: true, desc: "Set college 2005 Collection II. Felpa e short navy." },
+      { id: "quote", pack: "quote", theme: "za", name: "Quote Tee", price: 36, img: "img/quote.webp", remote: CDN + "Screenshot_2025-06-25_at_04.18.21.png?v=1750818096&width=800", desc: "SILENCE IS A TRUE FRIEND who never BETRAYS." },
+      { id: "wpant", pack: "war-pants", theme: "war", name: "War Sweatpants", price: 65, img: "img/war-pants.webp", remote: CDN + "5.png?v=1757489695&width=800", desc: "Joggers grey con lettering laterale destroyed." }
     ];
+
+
+    const cutCache = new Map();
+    function cutout(url) {
+      if (!url) return Promise.resolve(url);
+      if (cutCache.has(url)) return Promise.resolve(cutCache.get(url));
+      return new Promise((resolve) => {
+        const im = new Image();
+        im.crossOrigin = "anonymous";
+        im.onload = () => {
+          try {
+            const c = document.createElement("canvas");
+            c.width = im.naturalWidth; c.height = im.naturalHeight;
+            const ctx = c.getContext("2d", { willReadFrequently: true });
+            ctx.drawImage(im, 0, 0);
+            const data = ctx.getImageData(0, 0, c.width, c.height);
+            const d = data.data;
+            for (let i = 0; i < d.length; i += 4) {
+              const r = d[i], g = d[i+1], b = d[i+2];
+              if (r > 236 && g > 236 && b > 236) d[i+3] = 0;
+              else if (r > 220 && g > 220 && b > 220 && Math.abs(r-g)<12 && Math.abs(g-b)<12) {
+                const w = (r+g+b)/3;
+                d[i+3] = Math.max(0, Math.min(255, (242-w)*10));
+              }
+            }
+            ctx.putImageData(data, 0, 0);
+            const out = c.toDataURL("image/png");
+            cutCache.set(url, out);
+            resolve(out);
+          } catch (e) { resolve(url); }
+        };
+        im.onerror = () => resolve(url);
+        im.src = url;
+      });
+    }
+    function setCutSrc(el, url) {
+      if (!el || !url) return;
+      el.src = url;
+      cutout(url).then(src => { if (el) el.src = src; });
+    }
 
     const pic = (p) => p.remote || p.img;
     const imgTag = (p, extra="") =>
@@ -817,6 +899,7 @@
     let size = "M";
     let cart = [];
 
+    setCutSrc(document.getElementById("heroImg"), pic(featured[0]));
     const picker = document.getElementById("picker");
     featured.forEach((p, i) => {
       const b = document.createElement("button");
@@ -843,7 +926,7 @@
       const wrap = document.getElementById("garment");
       wrap.classList.add("spin");
       const apply = () => {
-        img.src = pic(p);
+        setCutSrc(img, pic(p));
         img.alt = p.name;
         wrap.classList.remove("spin");
         document.getElementById("heroName").textContent = p.name;
@@ -906,6 +989,10 @@
         <div class="info"><h3>${p.name}</h3><div class="price">${euro(p.price)}</div></div>`;
       card.onclick = () => openModal(p);
       wheel.appendChild(card);
+    });
+    document.querySelectorAll(".wheel-card img, .card img, .dot img").forEach(im => {
+      const u = im.getAttribute("src");
+      if (u && !u.startsWith("data:")) cutout(u).then(s => im.src = s);
     });
 
     let wheelIndex = 0;
@@ -995,7 +1082,7 @@
 
     function openModal(p) {
       setTheme(p.theme);
-      document.getElementById("mImg").src = pic(p);
+      setCutSrc(document.getElementById("mImg"), pic(p));
       document.getElementById("mName").textContent = p.name;
       document.getElementById("mPrice").textContent = euro(p.price);
       document.getElementById("mDesc").textContent = p.desc;
